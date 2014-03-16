@@ -14,13 +14,11 @@ public class EchoHandlerTest {
 
     @Test
     public void should_match_if_the_fixture_input_has_the_echo_selector() {
-
         assertTrue(echoHandler.canProcess(parseContent("echo: Hello World\n")));
     }
 
     @Test
     public void should_not_match_if_the_fixture_input_does_not_have_the_echo_selector() {
-
         assertFalse(echoHandler.canProcess(parseContent("echos: Hello World\n")));
     }
 

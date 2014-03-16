@@ -6,9 +6,6 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class JDBCHandler implements FixtureHandler {
-    public static final String JDBC_CONNECT = "jdbc-connect";
-    public static final String JDBC_CREATE_TABLE = "jdbc-create-table";
-    public static final String JDBC_INSERT = "jdbc-insert";
     private Connection connection;
     private boolean autoCloseConnection = true;
 
@@ -41,23 +38,6 @@ public class JDBCHandler implements FixtureHandler {
         if (operation != null) {
             operation.process(this, fixtureInput);
         }
-//        if (fixtureInput.containsKey(JDBC_CONNECT)) {
-//            processConnect(fixtureInput.get(JDBC_CONNECT));
-//        } else if (fixtureInput.containsKey(JDBC_CREATE_TABLE)) {
-//            processCreateTable(fixtureInput.get(JDBC_CREATE_TABLE));
-//        } else if (fixtureInput.containsKey(JDBC_INSERT)) {
-//            processInsert(fixtureInput.get(JDBC_INSERT));
-//        }
-    }
-
-    private void processConnect(Object input) throws FixtureException {
-    }
-
-    private void processCreateTable(Object input) throws FixtureException {
-    }
-
-    private void processInsert(Object input) throws FixtureException {
-
     }
 
     public static JDBCHandler create() {

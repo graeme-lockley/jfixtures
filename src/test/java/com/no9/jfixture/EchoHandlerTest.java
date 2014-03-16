@@ -1,15 +1,13 @@
 package com.no9.jfixture;
 
 import org.junit.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class EchoHandlerTest {
+public class EchoHandlerTest extends HandlerTest {
     private EchoHandler echoHandler = EchoHandler.create();
 
     @Test
@@ -36,11 +34,5 @@ public class EchoHandlerTest {
         System.setOut(oldOut);
 
         assertEquals("Hello World", baos.toString().trim());
-    }
-
-    private static Map<String, Object> parseContent(String content) {
-        Yaml yaml = new Yaml();
-
-        return (Map<String, Object>) yaml.load(content);
     }
 }

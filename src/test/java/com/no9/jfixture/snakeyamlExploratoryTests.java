@@ -65,7 +65,6 @@ public class snakeyamlExploratoryTests {
         List<Object> people = (List<Object>) objects.next();
 
         Map johnItem = (Map) people.get(0);
-        System.out.println(johnItem);
         assertEquals("Smith", johnItem.get("surname"));
         assertEquals(34, johnItem.get("age"));
 

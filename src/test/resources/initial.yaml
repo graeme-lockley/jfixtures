@@ -1,2 +1,1 @@
-- echo:
-    message: Hello World
+- echo: Hello World

@@ -3,6 +3,9 @@ package com.no9.jfixture;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 public class FixturesTest {
     @Test(expected = java.io.IOException.class)
@@ -34,5 +37,17 @@ public class FixturesTest {
         try (Fixtures fixtures = Fixtures.loadFromResources("initial.yaml")) {
             fixtures.processFixtures();
         }
+    }
+
+    @Test
+    public void should_process_the_fixtures_with_the_registered_handler() throws IOException, FixtureException {
+        EchoHandlerDummy echoHandlerDummy = EchoHandlerDummy.create();
+
+        try (Fixtures fixtures = Fixtures.loadFromResources("initial.yaml", Arrays.<FixtureHandler>asList(echoHandlerDummy))) {
+            fixtures.processFixtures();
+        }
+
+        assertEquals(1, echoHandlerDummy.messages().size());
+        assertEquals("Hello World", echoHandlerDummy.messages().get(0));
     }
 }

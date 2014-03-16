@@ -13,6 +13,15 @@ public class JDBCHandler implements FixtureHandler {
     public static final String JDBC_CREATE_TABLE = "jdbc-create-table";
     public static final String JDBC_INSERT = "jdbc-insert";
     private Connection connection;
+    private boolean autoCloseConnection = true;
+
+    public JDBCHandler(Connection connection) {
+        this.connection = connection;
+        this.autoCloseConnection = false;
+    }
+
+    public JDBCHandler() {
+    }
 
     @Override
     public boolean canProcess(Map<String, Object> fixtureInput) {
@@ -37,6 +46,7 @@ public class JDBCHandler implements FixtureHandler {
             try {
                 Class.forName(parameter(connectParams, "driver"));
                 connection = DriverManager.getConnection(parameter(connectParams, "url"), parameter(connectParams, "username", ""), parameter(connectParams, "password", ""));
+                autoCloseConnection = true;
             } catch (ClassNotFoundException e) {
                 throw new FixtureException("JDBCHandler: " + JDBC_CONNECT + ": Loading of the driver class " + parameter(connectParams, "driver") + " failed.");
             } catch (SQLException e) {
@@ -77,10 +87,21 @@ public class JDBCHandler implements FixtureHandler {
                         .delete(buffer.length() - 2, buffer.length())
                         .append(")");
 
-                try (Statement statement = connection.createStatement()) {
+                Statement statement = null;
+                try {
+                    statement = connection.createStatement();
                     statement.execute(String.valueOf(buffer));
                 } catch (SQLException e) {
                     throw new FixtureException("JDBCHandler: " + JDBC_CREATE_TABLE + ": Error executing create table: " + buffer + ": " + e.toString());
+                } finally {
+                   if (statement != null) {
+                       try {
+                           statement.close();
+                       } catch (SQLException ignored) {
+
+                       }
+                   }
+
                 }
             } else {
                 throw new FixtureException("JDBCHandler: " + JDBC_CREATE_TABLE + ": Expects rows defined as a mapping.");
@@ -136,12 +157,20 @@ public class JDBCHandler implements FixtureHandler {
                             .append(")");
                     buffer.append(values);
 
-                    System.out.println(buffer);
-
-                    try (Statement statement = connection.createStatement()) {
+                    Statement statement = null;
+                    try {
+                        statement = connection.createStatement();
                         statement.execute(String.valueOf(buffer));
                     } catch (SQLException e) {
                         throw new FixtureException("JDBCHandler: " + JDBC_INSERT + ": Error executing statement: " + buffer + ": " + e.toString());
+                    } finally {
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ignored) {
+
+                            }
+                        }
                     }
                 }
             } else {
@@ -172,6 +201,10 @@ public class JDBCHandler implements FixtureHandler {
 
     public static JDBCHandler create() {
         return new JDBCHandler();
+    }
+
+    public static JDBCHandler create(Connection connection) {
+        return new JDBCHandler(connection);
     }
 
     public boolean isConnected() {

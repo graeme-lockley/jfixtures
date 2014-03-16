@@ -45,11 +45,12 @@ public class JDBCFixtureTest extends HandlerTest {
         assertTrue(handler.canProcess(createTableContent));
         handler.process(createTableContent);
 
-        try (PreparedStatement preparedStatement = handler.connection().prepareStatement("select count(*) from people");
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            resultSet.next();
-            assertEquals(0, resultSet.getInt(1));
-        }
+        PreparedStatement preparedStatement = handler.connection().prepareStatement("select count(*) from people");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        assertEquals(0, resultSet.getInt(1));
+        resultSet.close();
+        preparedStatement.close();
 
         handler.close();
     }
@@ -76,14 +77,16 @@ public class JDBCFixtureTest extends HandlerTest {
         assertTrue(handler.canProcess(insertTableContent));
         handler.process(insertTableContent);
 
-        try (PreparedStatement preparedStatement = handler.connection().prepareStatement("select id, name from people order by name");
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            resultSet.next();
-            assertEquals("Graeme", resultSet.getString(2));
-            resultSet.next();
-            assertEquals("Tim", resultSet.getString(2));
-            assertFalse(resultSet.next());
-        }
+        PreparedStatement preparedStatement = handler.connection().prepareStatement("select id, name from people order by name");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        assertEquals("Graeme", resultSet.getString(2));
+        resultSet.next();
+        assertEquals("Tim", resultSet.getString(2));
+        assertFalse(resultSet.next());
+
+        preparedStatement.close();
+        resultSet.close();
 
         handler.close();
     }

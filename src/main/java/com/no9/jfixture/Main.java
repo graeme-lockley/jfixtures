@@ -1,4 +1,4 @@
-package com.no9.jfixtures;
+package com.no9.jfixture;
 
 public class Main {
 	static public void main(String... args) {

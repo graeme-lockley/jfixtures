@@ -1,18 +1,22 @@
 package com.no9.jfixture;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 
 public class JDBCHandler implements FixtureHandler {
     public static final String JDBC_CONNECT = "jdbc-connect";
     public static final String JDBC_CREATE_TABLE = "jdbc-create-table";
+    public static final String JDBC_INSERT = "jdbc-insert";
     private Connection connection;
 
     @Override
     public boolean canProcess(Map<String, Object> fixtureInput) {
-        return fixtureInput.containsKey(JDBC_CONNECT) || fixtureInput.containsKey(JDBC_CREATE_TABLE);
+        return fixtureInput.containsKey(JDBC_CONNECT) || fixtureInput.containsKey(JDBC_CREATE_TABLE) || fixtureInput.containsKey(JDBC_INSERT);
     }
 
     @Override
@@ -21,6 +25,8 @@ public class JDBCHandler implements FixtureHandler {
             processConnect(fixtureInput.get(JDBC_CONNECT));
         } else if (fixtureInput.containsKey(JDBC_CREATE_TABLE)) {
             processCreateTable(fixtureInput.get(JDBC_CREATE_TABLE));
+        } else if (fixtureInput.containsKey(JDBC_INSERT)) {
+            processInsert(fixtureInput.get(JDBC_INSERT));
         }
     }
 
@@ -55,7 +61,7 @@ public class JDBCHandler implements FixtureHandler {
             Object rowsObject = connectParams.get("rows");
 
             if (rowsObject == null) {
-                throw new FixtureException("JDBCHandler: " + JDBC_CREATE_TABLE + ": No rows defined as a mapping.");
+                throw new FixtureException("JDBCHandler: " + JDBC_CREATE_TABLE + ": The expected parameter rows is missing.");
             } else if (rowsObject instanceof Map) {
                 Map<String, Object> rows = (Map<String, Object>) rowsObject;
 
@@ -71,10 +77,72 @@ public class JDBCHandler implements FixtureHandler {
                         .delete(buffer.length() - 2, buffer.length())
                         .append(")");
 
-                try {
-                    connection.createStatement().execute(String.valueOf(buffer));
+                try (Statement statement = connection.createStatement()) {
+                    statement.execute(String.valueOf(buffer));
                 } catch (SQLException e) {
                     throw new FixtureException("JDBCHandler: " + JDBC_CREATE_TABLE + ": Error executing create table: " + buffer + ": " + e.toString());
+                }
+            } else {
+                throw new FixtureException("JDBCHandler: " + JDBC_CREATE_TABLE + ": Expects rows defined as a mapping.");
+            }
+        } else {
+            throw new FixtureException("JDBCHandler: " + JDBC_CONNECT + ": Expects a mapping.");
+        }
+    }
+
+    private void processInsert(Object input) throws FixtureException {
+        if (input instanceof Map) {
+            Map<String, Object> connectParams = (Map<String, Object>) input;
+
+            Object rowsObject = connectParams.get("rows");
+
+            if (rowsObject == null) {
+                throw new FixtureException("JDBCHandler: " + JDBC_INSERT + ": The expected parameter rows is missing.");
+            } else if (rowsObject instanceof List) {
+                List<Map<String, Object>> rows = (List<Map<String, Object>>) rowsObject;
+
+                for (Map<String, Object> row : rows) {
+                    StringBuilder buffer = new StringBuilder();
+                    StringBuilder values = new StringBuilder();
+
+                    buffer
+                            .append("insert into ")
+                            .append(parameter(connectParams, "name"))
+                            .append(" (");
+                    values.append(" values (");
+
+                    for (String key : row.keySet()) {
+                        buffer
+                                .append(key)
+                                .append(", ");
+                        Object value = row.get(key);
+
+                        if (value instanceof String) {
+                            values.append("'")
+                                    .append(String.valueOf(value))
+                                    .append("'");
+                        } else {
+                            values.append(String.valueOf(value));
+                        }
+                        values.append(", ");
+                    }
+
+
+                    buffer
+                            .delete(buffer.length() - 2, buffer.length())
+                            .append(")");
+                    values
+                            .delete(values.length() - 2, values.length())
+                            .append(")");
+                    buffer.append(values);
+
+                    System.out.println(buffer);
+
+                    try (Statement statement = connection.createStatement()) {
+                        statement.execute(String.valueOf(buffer));
+                    } catch (SQLException e) {
+                        throw new FixtureException("JDBCHandler: " + JDBC_INSERT + ": Error executing statement: " + buffer + ": " + e.toString());
+                    }
                 }
             } else {
                 throw new FixtureException("JDBCHandler: " + JDBC_CREATE_TABLE + ": Expects rows defined as a mapping.");
@@ -112,5 +180,18 @@ public class JDBCHandler implements FixtureHandler {
 
     protected Connection connection() {
         return this.connection;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (connection != null) {
+            try {
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                throw new IOException(e);
+            }
+            connection = null;
+        }
     }
 }

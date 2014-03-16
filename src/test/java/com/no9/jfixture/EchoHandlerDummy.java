@@ -1,5 +1,6 @@
 package com.no9.jfixture;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,5 +24,9 @@ public class EchoHandlerDummy implements FixtureHandler {
     @Override
     public void process(Map<String, Object> fixtureInput) throws FixtureException {
         messages.add(String.valueOf(fixtureInput.get("echo")));
+    }
+
+    @Override
+    public void close() throws IOException {
     }
 }

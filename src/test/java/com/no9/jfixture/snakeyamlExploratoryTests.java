@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class YAMLUsageTests {
+public class snakeyamlExploratoryTests {
     private Yaml yaml = new Yaml();
 
     @Test

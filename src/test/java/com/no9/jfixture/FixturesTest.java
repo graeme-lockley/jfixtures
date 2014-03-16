@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class FixturesTest {
@@ -47,7 +48,8 @@ public class FixturesTest {
             fixtures.processFixtures();
         }
 
-        assertEquals(1, echoHandlerDummy.messages().size());
-        assertEquals("Hello World", echoHandlerDummy.messages().get(0));
+        assertEquals(
+                asList("Hello World", "Bye bye love", "Hello loneliness", "Redemption... starts with the acknowledgment"),
+                echoHandlerDummy.messages());
     }
 }

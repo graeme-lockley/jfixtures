@@ -45,6 +45,18 @@ public class Fixtures implements Closeable {
         for (Object fixtureDocument : fixtureDocuments) {
             processDocument(fixtureDocument);
         }
+
+        try {
+            closeHandlers();
+        } catch (IOException ex) {
+            throw new FixtureException(ex);
+        }
+    }
+
+    protected void closeHandlers() throws IOException {
+        for (FixtureHandler handler : handlers) {
+            handler.close();
+        }
     }
 
     private void processDocument(Object fixtureDocument) throws FixtureException {

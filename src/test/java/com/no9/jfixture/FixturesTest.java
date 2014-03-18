@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class FixturesTest {
     @Test(expected = java.io.IOException.class)
@@ -42,10 +42,14 @@ public class FixturesTest {
         EchoHandlerDummy echoHandlerDummy = EchoHandlerDummy.create();
 
         Fixtures fixtures = Fixtures.loadFromResources("initial.yaml", Arrays.<FixtureHandler>asList(echoHandlerDummy));
+
+        assertFalse(echoHandlerDummy.hasBeenClosed());
         fixtures.processFixtures();
 
         assertEquals(
                 asList("Hello World", "Bye bye love", "Hello loneliness", "Redemption... starts with the acknowledgment"),
                 echoHandlerDummy.messages());
+
+        assertTrue(echoHandlerDummy.hasBeenClosed());
     }
 }

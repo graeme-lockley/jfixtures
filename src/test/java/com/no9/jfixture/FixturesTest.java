@@ -3,7 +3,6 @@ package com.no9.jfixture;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -41,7 +40,7 @@ public class FixturesTest {
     public void should_process_the_fixtures_with_the_registered_handler() throws IOException, FixtureException {
         EchoHandlerDummy echoHandlerDummy = EchoHandlerDummy.create();
 
-        Fixtures fixtures = Fixtures.loadFromResources("initial.yaml", Arrays.<FixtureHandler>asList(echoHandlerDummy));
+        Fixtures fixtures = Fixtures.loadFromResources("initial.yaml", echoHandlerDummy);
 
         assertFalse(echoHandlerDummy.hasBeenClosed());
         fixtures.processFixtures();

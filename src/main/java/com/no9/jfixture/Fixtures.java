@@ -6,16 +6,15 @@ import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Fixtures implements Closeable {
     private InputStream inputStream;
     private Iterable<Object> fixtureDocuments;
-    private final Iterable<FixtureHandler> handlers;
+    private final FixtureHandler[] handlers;
 
-    private Fixtures(InputStream inputStream, Iterable<FixtureHandler> handlers) throws IOException {
+    private Fixtures(InputStream inputStream, FixtureHandler... handlers) throws IOException {
         Yaml yaml = new Yaml();
 
         this.inputStream = inputStream;
@@ -23,7 +22,7 @@ public class Fixtures implements Closeable {
         this.handlers = handlers;
     }
 
-    public static Fixtures loadFromResources(String resourceName, Iterable<FixtureHandler> handlers) throws IOException {
+    public static Fixtures loadFromResources(String resourceName, FixtureHandler... handlers) throws IOException {
         ClassLoader loader = Fixtures.class.getClassLoader();
         InputStream inputStream = loader.getResourceAsStream(resourceName);
         if (inputStream == null) {
@@ -33,12 +32,12 @@ public class Fixtures implements Closeable {
     }
 
     public static Fixtures loadFromResources(String resourceName) throws IOException {
-        return loadFromResources(resourceName, new ArrayList<FixtureHandler>());
+        return loadFromResources(resourceName, new FixtureHandler[0]);
     }
 
     public static Fixtures fromString(String fixtureContent) throws IOException {
         InputStream inputStream = new ByteArrayInputStream(fixtureContent.getBytes());
-        return new Fixtures(inputStream, new ArrayList<FixtureHandler>());
+        return new Fixtures(inputStream);
     }
 
     public void processFixtures() throws FixtureException {

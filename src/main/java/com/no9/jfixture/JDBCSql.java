@@ -18,6 +18,5 @@ public class JDBCSql extends JDBCOperation {
         } else {
             throw new FixtureException(exceptionMessagePrefix() + "Expected a list of SQL statements.");
         }
-
     }
 }

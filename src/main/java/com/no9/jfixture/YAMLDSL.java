@@ -52,6 +52,7 @@ public class YAMLDSL {
         private Object value;
         private String ifBlankExceptionMessage = null;
         private String ifNullException = null;
+        private Object defaultValue;
 
         public Field(Object value) {
             this.value = value;
@@ -64,8 +65,11 @@ public class YAMLDSL {
             if (ifBlankExceptionMessage != null && StringUtils.isBlank(value == null ? null : value.toString())) {
                 throw new IllegalArgumentException(ifBlankExceptionMessage);
             }
-
-            return String.valueOf(value);
+            if (defaultValue != null && value == null) {
+                return String.valueOf(defaultValue);
+            } else {
+                return String.valueOf(value);
+            }
         }
 
         public YAMLMap map() {
@@ -85,6 +89,11 @@ public class YAMLDSL {
 
         public Field ifNullException(String message) {
             ifNullException = message;
+            return this;
+        }
+
+        public Field ifBlankDefault(Object defaultValue) {
+            this.defaultValue = defaultValue;
             return this;
         }
     }

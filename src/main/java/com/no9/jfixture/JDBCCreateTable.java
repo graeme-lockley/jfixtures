@@ -1,6 +1,7 @@
 package com.no9.jfixture;
 
-import java.util.Map;
+import static com.no9.jfixture.YAMLDSL.YAMLMap;
+import static com.no9.jfixture.YAMLDSL.fromYAML;
 
 public class JDBCCreateTable extends JDBCOperation {
     public JDBCCreateTable(String selector) {
@@ -9,41 +10,27 @@ public class JDBCCreateTable extends JDBCOperation {
 
     @Override
     protected void processOperation(JDBCHandler handler, Object fixtureInput) throws FixtureException {
-        if (fixtureInput instanceof Map) {
-            Map<String, Object> connectParams = (Map<String, Object>) fixtureInput;
-
-            StringBuilder buffer = new StringBuilder();
-
-            buffer
+        if (fromYAML(fixtureInput).isMap()) {
+            StringBuilder buffer = new StringBuilder()
                     .append("create table if not exists ")
-                    .append(parameter(connectParams, "name"))
+                    .append(fromYAML(fixtureInput).map().field("name").ifBlankException(exceptionMessagePrefix() + ": Field name has not been set.").asString())
                     .append(" (");
 
-            Object rowsObject = connectParams.get("rows");
+            YAMLMap rows = fromYAML(fixtureInput).map().field("rows").ifNullException(exceptionMessagePrefix() + ": Field rows has not been set.").map();
 
-            if (rowsObject == null) {
-                throw new FixtureException(exceptionMessagePrefix() + "The expected parameter rows is missing.");
-            } else if (rowsObject instanceof Map) {
-                Map<String, Object> rows = (Map<String, Object>) rowsObject;
-
-                for (String key : rows.keySet()) {
-                    buffer
-                            .append(key)
-                            .append(" ")
-                            .append(String.valueOf(rows.get(key)))
-                            .append(", ");
-                }
-
-                buffer
-                        .delete(buffer.length() - 2, buffer.length())
-                        .append(")");
-
-                executeStatement(handler, buffer.toString());
-            } else {
-                throw new FixtureException(exceptionMessagePrefix() + "Expects rows defined as a mapping.");
+            for (String key : rows.keySet()) {
+                buffer.append(key)
+                        .append(" ")
+                        .append(String.valueOf(rows.get(key)))
+                        .append(", ");
             }
+
+            buffer.delete(buffer.length() - 2, buffer.length())
+                    .append(")");
+
+            executeStatement(handler, buffer.toString());
         } else {
-            throw new FixtureException(exceptionMessagePrefix() + "Expects a mapping.");
+            throw new FixtureException(exceptionMessagePrefix() + "Expects rows defined as a mapping.");
         }
     }
 }

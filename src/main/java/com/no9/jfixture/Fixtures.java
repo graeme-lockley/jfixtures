@@ -6,20 +6,23 @@ import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class Fixtures implements Closeable {
     private InputStream inputStream;
     private Iterable<Object> fixtureDocuments;
-    private final FixtureHandler[] handlers;
+    private FixtureHandler[] handlers;
 
     private Fixtures(InputStream inputStream, FixtureHandler... handlers) throws IOException {
         Yaml yaml = new Yaml();
 
         this.inputStream = inputStream;
         this.fixtureDocuments = yaml.loadAll(inputStream);
+
         this.handlers = handlers;
+        addHandler(new HandlerHandler());
     }
 
     public static Fixtures loadFromResources(String resourceName, FixtureHandler... handlers) throws IOException {
@@ -75,7 +78,12 @@ public class Fixtures implements Closeable {
     private void processFixture(Map<String, Object> fixtureInput) throws FixtureException {
         if (fixtureInput.size() == 1) {
             FixtureHandler handler = getHandler(fixtureInput);
-            handler.process(fixtureInput);
+
+            if (handler instanceof BasicFixtureHandler) {
+                ((BasicFixtureHandler) handler).process(fixtureInput);
+            } else {
+                ((ExtendedFixtureHandler) handler).process(this, fixtureInput);
+            }
         } else {
             throw new FixtureException("Each fixture must have a single selector.");
         }
@@ -96,5 +104,14 @@ public class Fixtures implements Closeable {
             inputStream.close();
             inputStream = null;
         }
+    }
+
+    public FixtureHandler[] handlers() {
+        return handlers.clone();
+    }
+
+    public void addHandler(FixtureHandler fixtureHandler) {
+        this.handlers = Arrays.copyOf(handlers, handlers.length + 1);
+        this.handlers[handlers.length - 1] = fixtureHandler;
     }
 }

@@ -5,10 +5,17 @@ import com.no9.utils.Optional;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class JDBCHandler implements BasicFixtureHandler {
     private Optional<Connection> connection;
+    private List<JDBCOperation> operations = Arrays.asList(
+            new JDBCConnect("jdbc-connect"),
+            new JDBCCreateTable("jdbc-create-table"),
+            new JDBCInsert("jdbc-insert"),
+            new JDBCSql("jdbc-sql"));
     private boolean autoCloseConnection = true;
 
     public JDBCHandler(Connection connection) {
@@ -24,8 +31,8 @@ public class JDBCHandler implements BasicFixtureHandler {
         return findOperation(fixtureInput) != null;
     }
 
-    private Optional<JDBCOperations> findOperation(Map<String, Object> fixtureInput) {
-        for (JDBCOperations operation : JDBCOperations.values()) {
+    private Optional<JDBCOperation> findOperation(Map<String, Object> fixtureInput) {
+        for (JDBCOperation operation : operations) {
             if (operation.canProcess(fixtureInput)) {
                 return Optional.of(operation);
             }
@@ -35,7 +42,7 @@ public class JDBCHandler implements BasicFixtureHandler {
 
     @Override
     public void process(final Map<String, Object> fixtureInput) throws FixtureException {
-        Optional<JDBCOperations> operation = findOperation(fixtureInput);
+        Optional<JDBCOperation> operation = findOperation(fixtureInput);
 
         if (operation.isPresent()) {
             operation.get().process(JDBCHandler.this, fixtureInput);

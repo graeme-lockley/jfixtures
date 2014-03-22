@@ -28,6 +28,12 @@ public class Fixtures implements Closeable {
         return load(input, new FixtureHandler[0]);
     }
 
+    public static Fixtures process(FixturesInput input) throws IOException, FixtureException {
+        Fixtures fixtures = load(input);
+        fixtures.processFixtures();
+        return fixtures;
+    }
+
     public void processFixtures(FixturesInput input) throws FixtureException {
         Optional<FixturesInput> oldInput = this.input;
 
@@ -106,5 +112,19 @@ public class Fixtures implements Closeable {
     public void addHandler(FixtureHandler fixtureHandler) {
         this.handlers = Arrays.copyOf(handlers, handlers.length + 1);
         this.handlers[handlers.length - 1] = fixtureHandler;
+    }
+
+    public <T extends FixtureHandler> Optional<T> findHandler(Class<T> classInstance) {
+        for (FixtureHandler handler : handlers()) {
+            if (classInstance.isInstance(handler)) {
+                return Optional.of((T) handler);
+            }
+        }
+
+        return Optional.none();
+    }
+
+    public <T extends FixtureHandler> T handler(Class<T> classInstance) {
+        return findHandler(classInstance).get();
     }
 }

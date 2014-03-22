@@ -70,6 +70,10 @@ public class JDBCHandler extends BasicFixtureHandler {
         this.autoCloseConnection = true;
     }
 
+    protected void autoCloseConnection(boolean autoCloseConnection) {
+        this.autoCloseConnection = autoCloseConnection;
+    }
+
     @Override
     public void close() throws IOException {
         if (autoCloseConnection) {

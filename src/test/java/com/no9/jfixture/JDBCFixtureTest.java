@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class JDBCFixtureTest extends HandlerTest {
     @Test
-    public void should_be_able_to_connect_to_database() throws FixtureException, IOException {
+    public void should_be_able_to_connect_to_database_and_automatically_close_the_connection() throws FixtureException, IOException {
         JDBCHandler handler = JDBCHandler.create();
         Map<String, Object> content = parseContent("jdbc-connect:\n" +
                 "   driver: org.h2.Driver\n" +
@@ -24,8 +24,28 @@ public class JDBCFixtureTest extends HandlerTest {
         handler.process(content);
 
         assertTrue(handler.isConnected());
-
         handler.close();
+        assertTrue(!handler.isConnected());
+    }
+
+    @Test
+    public void should_be_able_to_connect_to_database_and_leave_the_connection_open_autoclose_is_false() throws FixtureException, IOException, SQLException {
+        JDBCHandler handler = JDBCHandler.create();
+        Map<String, Object> content = parseContent("jdbc-connect:\n" +
+                "   driver: org.h2.Driver\n" +
+                "   url: 'jdbc:h2:mem:'\n" +
+                "   username: sa\n" +
+                "   password: \n" +
+                "   autoclose: false");
+
+        assertTrue(handler.canProcess(content));
+        handler.process(content);
+
+        assertTrue(handler.isConnected());
+        handler.close();
+        assertTrue(handler.isConnected());
+
+        handler.connection().close();
     }
 
     @Test

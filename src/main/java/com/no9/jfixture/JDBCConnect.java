@@ -21,6 +21,9 @@ public class JDBCConnect extends JDBCOperation {
                     fixtureMap.field("url").ifBlankException(exceptionMessagePrefix() + ": Field driver has not been set.").asString(),
                     fixtureMap.field("username").ifBlankDefault("").asString(),
                     fixtureMap.field("password").ifBlankDefault("").asString()));
+
+            handler.autoCloseConnection(fixtureMap.field("autoclose").ifEmptyDefault(true).asBoolean());
+
         } catch (ClassNotFoundException e) {
             throw new FixtureException(exceptionMessagePrefix() + "Loading of the driver class " + driverName + " failed:" + e.getMessage());
         } catch (SQLException e) {

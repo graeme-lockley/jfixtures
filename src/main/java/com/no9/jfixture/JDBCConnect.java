@@ -12,23 +12,19 @@ public class JDBCConnect extends JDBCOperation {
 
     @Override
     protected void processOperation(JDBCHandler handler, Object fixtureInput) throws FixtureException {
-        if (fromYAML(fixtureInput).isMap()) {
-            YAMLDSL.YAMLMap fixtureMap = fromYAML(fixtureInput).map();
+        YAMLDSL.YAMLMap fixtureMap = fromYAML(fixtureInput).mapElseException(exceptionMessagePrefix() + ": Excepts a map");
 
-            String driverName = fixtureMap.field("driver").ifBlankException(exceptionMessagePrefix() + ": Field driver has not been set.").asString();
-            try {
-                Class.forName(driverName);
-                handler.connection(DriverManager.getConnection(
-                        fixtureMap.field("url").ifBlankException(exceptionMessagePrefix() + ": Field driver has not been set.").asString(),
-                        fixtureMap.field("username").ifBlankDefault("").asString(),
-                        fixtureMap.field("password").ifBlankDefault("").asString()));
-            } catch (ClassNotFoundException e) {
-                throw new FixtureException(exceptionMessagePrefix() + "Loading of the driver class " + driverName + " failed:" + e.getMessage());
-            } catch (SQLException e) {
-                throw new FixtureException(exceptionMessagePrefix() + "Unable to connect: " + e.getMessage());
-            }
-        } else {
-            throw new FixtureException(exceptionMessagePrefix() + "Expects a mapping.");
+        String driverName = fixtureMap.field("driver").ifBlankException(exceptionMessagePrefix() + ": Field driver has not been set.").asString();
+        try {
+            Class.forName(driverName);
+            handler.connection(DriverManager.getConnection(
+                    fixtureMap.field("url").ifBlankException(exceptionMessagePrefix() + ": Field driver has not been set.").asString(),
+                    fixtureMap.field("username").ifBlankDefault("").asString(),
+                    fixtureMap.field("password").ifBlankDefault("").asString()));
+        } catch (ClassNotFoundException e) {
+            throw new FixtureException(exceptionMessagePrefix() + "Loading of the driver class " + driverName + " failed:" + e.getMessage());
+        } catch (SQLException e) {
+            throw new FixtureException(exceptionMessagePrefix() + "Unable to connect: " + e.getMessage());
         }
     }
 }

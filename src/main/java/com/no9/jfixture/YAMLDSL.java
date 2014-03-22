@@ -32,6 +32,14 @@ public class YAMLDSL {
         }
     }
 
+    public Iterable iterableElseException(String exceptionMessage) {
+        if (yaml instanceof Iterable) {
+            return (Iterable) yaml;
+        } else {
+            throw new IllegalArgumentException(exceptionMessage);
+        }
+    }
+
     static public class YAMLMap {
         private Map map;
 

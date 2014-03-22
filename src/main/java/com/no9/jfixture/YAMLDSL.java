@@ -71,23 +71,13 @@ public class YAMLDSL {
         }
 
         public String asString() {
-            if (ifNullException != null && value == null) {
-                throw new IllegalArgumentException(ifNullException);
-            }
-            if (ifBlankExceptionMessage != null && StringUtils.isBlank(value == null ? null : value.toString())) {
-                throw new IllegalArgumentException(ifBlankExceptionMessage);
-            }
-            if (defaultValue != null && value == null) {
-                return String.valueOf(defaultValue);
-            } else {
-                return String.valueOf(value);
-            }
+            checkField();
+            return String.valueOf(value());
         }
 
         public YAMLMap map() {
-            if (ifNullException != null && value == null) {
-                throw new IllegalArgumentException(ifNullException);
-            }
+            checkField();
+
             if (value instanceof Map) {
                 return new YAMLMap((Map) value);
             }
@@ -110,13 +100,54 @@ public class YAMLDSL {
         }
 
         public Iterable<Object> iterableElseException(String exceptionMessage) {
-            if (ifNullException != null && value == null) {
-                throw new IllegalArgumentException(ifNullException);
-            }
+            checkField();
+
             if (value instanceof Iterable) {
                 return (Iterable) value;
             }
             throw new IllegalArgumentException(exceptionMessage);
+        }
+
+        public BooleanField ifEmptyDefault(boolean defaultValue) {
+            return new BooleanField(this).defaultVault(defaultValue);
+        }
+
+        protected void checkField() {
+            if (ifNullException != null && value == null) {
+                throw new IllegalArgumentException(ifNullException);
+            }
+            if (ifBlankExceptionMessage != null && StringUtils.isBlank(value == null ? null : value.toString())) {
+                throw new IllegalArgumentException(ifBlankExceptionMessage);
+            }
+        }
+
+        protected Object value() {
+            return defaultValue != null && value == null ? defaultValue : value;
+        }
+    }
+
+    static public class BooleanField {
+        private final Field field;
+
+        BooleanField(Field field) {
+            this.field = field;
+        }
+
+        public BooleanField defaultVault(boolean defaultValue) {
+            field.defaultValue = defaultValue;
+            return this;
+        }
+
+        public boolean asBoolean() {
+            field.checkField();
+
+            Object value = field.value();
+
+            if (value instanceof Boolean) {
+                return (Boolean) value;
+            } else {
+                throw new IllegalArgumentException("Attempt to use " + String.valueOf(value) + " as a boolean.");
+            }
         }
     }
 }

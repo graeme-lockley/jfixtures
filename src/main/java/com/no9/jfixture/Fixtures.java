@@ -1,5 +1,7 @@
 package com.no9.jfixture;
 
+import com.no9.utils.Optional;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
@@ -7,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class Fixtures implements Closeable {
-    private FixturesInput input;
+    private Optional<FixturesInput> input;
     private FixtureHandler[] handlers;
 
     private Fixtures(FixturesInput input, FixtureHandler... handlers) throws IOException {
-        this.input = input;
+        this.input = Optional.of(input);
         this.handlers = handlers;
 
         addHandler(new NewHandlerHandler());
@@ -27,10 +29,10 @@ public class Fixtures implements Closeable {
     }
 
     public void processFixtures(FixturesInput input) throws FixtureException {
-        FixturesInput oldInput = this.input;
+        Optional<FixturesInput> oldInput = this.input;
 
         try {
-            this.input = input;
+            this.input = Optional.of(input);
             processFixtures();
         } finally {
             this.input = oldInput;
@@ -38,7 +40,7 @@ public class Fixtures implements Closeable {
     }
 
     public void processFixtures() throws FixtureException {
-        for (Object fixtureDocument : input.fixtureDocuments()) {
+        for (Object fixtureDocument : input.orElse(FixturesInput.none()).fixtureDocuments()) {
             processDocument(fixtureDocument);
         }
 
@@ -94,8 +96,7 @@ public class Fixtures implements Closeable {
 
     @Override
     public void close() throws IOException {
-        input.close();
-        input = null;
+        input.orElse(FixturesInput.none()).close();
     }
 
     public FixtureHandler[] handlers() {

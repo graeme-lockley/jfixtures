@@ -18,7 +18,7 @@ public final class FixturesInput implements Closeable {
         this.fixtureDocuments = yaml.loadAll(inputStream);
     }
 
-    public static FixturesInput fromString(String fixtureContent) throws IOException {
+    public static FixturesInput fromString(String fixtureContent) {
         InputStream inputStream = new ByteArrayInputStream(fixtureContent.getBytes());
         return new FixturesInput(inputStream);
     }
@@ -48,5 +48,9 @@ public final class FixturesInput implements Closeable {
 
     public void close() throws IOException {
         inputStream.close();
+    }
+
+    public static FixturesInput none() {
+        return fromString("");
     }
 }

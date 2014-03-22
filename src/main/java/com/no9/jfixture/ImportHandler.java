@@ -20,19 +20,17 @@ public class ImportHandler implements ExtendedFixtureHandler {
     public void process(Fixtures fixtures, Map<String, Object> fixtureInput) throws FixtureException {
         String importLocation = fromYAML(fixtureInput).map().field("import").asString();
 
-        FixturesInput input = null;
+        FixturesInput input = FixturesInput.none();
         try {
             input = FixturesInput.fromLocation(importLocation);
             fixtures.processFixtures(input);
         } catch (IOException ex) {
             throw new FixtureException(ex);
         } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException ignored) {
-                    // Swallow exception...
-                }
+            try {
+                input.close();
+            } catch (IOException ignored) {
+                // Swallow exception...
             }
         }
     }

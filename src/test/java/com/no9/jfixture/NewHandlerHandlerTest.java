@@ -7,13 +7,13 @@ import java.io.IOException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class HandlerHandlerTest {
+public class NewHandlerHandlerTest {
     private Fixtures fixtures;
 
     @Test
     public void should_auto_register_the_handler_handler() throws IOException {
         fixtures = Fixtures.loadFromResources("initial.yaml");
-        assertTrue(hasHandler(HandlerHandler.class));
+        assertTrue(hasHandler(NewHandlerHandler.class));
     }
 
     @Test

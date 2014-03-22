@@ -22,7 +22,7 @@ public class Fixtures implements Closeable {
         this.fixtureDocuments = yaml.loadAll(inputStream);
 
         this.handlers = handlers;
-        addHandler(new HandlerHandler());
+        addHandler(new NewHandlerHandler());
     }
 
     public static Fixtures loadFromResources(String resourceName, FixtureHandler... handlers) throws IOException {

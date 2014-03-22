@@ -3,7 +3,7 @@ package com.no9.jfixture;
 import java.io.IOException;
 import java.util.Map;
 
-public class HandlerHandler implements ExtendedFixtureHandler {
+public class NewHandlerHandler implements ExtendedFixtureHandler {
     public static final String NEW_HANDLER_SELECTOR = "new-handler";
 
     @Override

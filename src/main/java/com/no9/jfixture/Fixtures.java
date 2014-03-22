@@ -1,50 +1,44 @@
 package com.no9.jfixture;
 
-import org.yaml.snakeyaml.Yaml;
-
-import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class Fixtures implements Closeable {
-    private InputStream inputStream;
-    private Iterable<Object> fixtureDocuments;
+    private FixturesInput input;
     private FixtureHandler[] handlers;
 
-    private Fixtures(InputStream inputStream, FixtureHandler... handlers) throws IOException {
-        Yaml yaml = new Yaml();
-
-        this.inputStream = inputStream;
-        this.fixtureDocuments = yaml.loadAll(inputStream);
-
+    private Fixtures(FixturesInput input, FixtureHandler... handlers) throws IOException {
+        this.input = input;
         this.handlers = handlers;
+
         addHandler(new NewHandlerHandler());
+        addHandler(new ImportHandler());
     }
 
-    public static Fixtures loadFromResources(String resourceName, FixtureHandler... handlers) throws IOException {
-        ClassLoader loader = Fixtures.class.getClassLoader();
-        InputStream inputStream = loader.getResourceAsStream(resourceName);
-        if (inputStream == null) {
-            throw new IOException("The resource " + resourceName + " could not be accessed.");
+    public static Fixtures load(FixturesInput input, FixtureHandler... handlers) throws IOException {
+        return new Fixtures(input, handlers);
+    }
+
+    public static Fixtures load(FixturesInput input) throws IOException {
+        return load(input, new FixtureHandler[0]);
+    }
+
+    public void processFixtures(FixturesInput input) throws FixtureException {
+        FixturesInput oldInput = this.input;
+
+        try {
+            this.input = input;
+            processFixtures();
+        } finally {
+            this.input = oldInput;
         }
-        return new Fixtures(inputStream, handlers);
-    }
-
-    public static Fixtures loadFromResources(String resourceName) throws IOException {
-        return loadFromResources(resourceName, new FixtureHandler[0]);
-    }
-
-    public static Fixtures fromString(String fixtureContent) throws IOException {
-        InputStream inputStream = new ByteArrayInputStream(fixtureContent.getBytes());
-        return new Fixtures(inputStream);
     }
 
     public void processFixtures() throws FixtureException {
-        for (Object fixtureDocument : fixtureDocuments) {
+        for (Object fixtureDocument : input.fixtureDocuments()) {
             processDocument(fixtureDocument);
         }
 
@@ -100,10 +94,8 @@ public class Fixtures implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (inputStream != null) {
-            inputStream.close();
-            inputStream = null;
-        }
+        input.close();
+        input = null;
     }
 
     public FixtureHandler[] handlers() {

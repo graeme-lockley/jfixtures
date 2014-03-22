@@ -10,4 +10,14 @@ public class HandlerTest {
 
         return (Map<String, Object>) yaml.load(content);
     }
+
+    protected static boolean hasHandler(Fixtures fixtures, Class handlerClass) {
+        for (FixtureHandler handler : fixtures.handlers()) {
+            if (handlerClass.isInstance(handler)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

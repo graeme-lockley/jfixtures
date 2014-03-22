@@ -1,7 +1,8 @@
 package com.no9.jfixture;
 
-import java.util.List;
 import java.util.Map;
+
+import static com.no9.jfixture.YAMLDSL.fromYAML;
 
 public class JDBCInsert extends JDBCOperation {
     public JDBCInsert(String selector) {
@@ -10,57 +11,48 @@ public class JDBCInsert extends JDBCOperation {
 
     @Override
     protected void processOperation(JDBCHandler handler, Object fixtureInput) throws FixtureException {
-        if (fixtureInput instanceof Map) {
-            Map<String, Object> connectParams = (Map<String, Object>) fixtureInput;
+        for (Object rowAsObject : fromYAML(fixtureInput)
+                .mapElseException(exceptionMessagePrefix() + ": Exceptions a map")
+                .field("rows")
+                .ifNullException(exceptionMessagePrefix() + ": The parameter rows is missing")
+                .iterableElseException(exceptionMessagePrefix() + ": The parameter rows is not a list")) {
 
-            Object rowsObject = connectParams.get("rows");
+            Map<String, Object> row = (Map) rowAsObject;
 
-            if (rowsObject == null) {
-                throw new FixtureException(exceptionMessagePrefix() + "The expected parameter rows is missing.");
-            } else if (rowsObject instanceof List) {
-                List<Map<String, Object>> rows = (List<Map<String, Object>>) rowsObject;
+            StringBuilder buffer = new StringBuilder();
+            StringBuilder values = new StringBuilder();
 
-                for (Map<String, Object> row : rows) {
-                    StringBuilder buffer = new StringBuilder();
-                    StringBuilder values = new StringBuilder();
+            buffer
+                    .append("insert into ")
+                    .append(fromYAML(fixtureInput).map().field("name").ifBlankException(": The parameter name is missing").asString())
+                    .append(" (");
+            values.append(" values (");
 
-                    buffer
-                            .append("insert into ")
-                            .append(parameter(connectParams, "name"))
-                            .append(" (");
-                    values.append(" values (");
+            for (String key : row.keySet()) {
+                buffer
+                        .append(key)
+                        .append(", ");
+                Object value = row.get(key);
 
-                    for (String key : row.keySet()) {
-                        buffer
-                                .append(key)
-                                .append(", ");
-                        Object value = row.get(key);
-
-                        if (value instanceof String) {
-                            values.append("'")
-                                    .append(String.valueOf(value))
-                                    .append("'");
-                        } else {
-                            values.append(String.valueOf(value));
-                        }
-                        values.append(", ");
-                    }
-
-                    buffer
-                            .delete(buffer.length() - 2, buffer.length())
-                            .append(")");
-                    values
-                            .delete(values.length() - 2, values.length())
-                            .append(")");
-                    buffer.append(values);
-
-                    executeStatement(handler, buffer.toString());
+                if (value instanceof String) {
+                    values.append("'")
+                            .append(String.valueOf(value))
+                            .append("'");
+                } else {
+                    values.append(String.valueOf(value));
                 }
-            } else {
-                throw new FixtureException(exceptionMessagePrefix() + "Expects rows defined as a mapping.");
+                values.append(", ");
             }
-        } else {
-            throw new FixtureException(exceptionMessagePrefix() + "Expects a mapping.");
+
+            buffer
+                    .delete(buffer.length() - 2, buffer.length())
+                    .append(")");
+            values
+                    .delete(values.length() - 2, values.length())
+                    .append(")");
+            buffer.append(values);
+
+            executeStatement(handler, buffer.toString());
         }
     }
 }

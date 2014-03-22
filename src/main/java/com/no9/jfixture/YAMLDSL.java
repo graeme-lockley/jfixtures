@@ -21,10 +21,14 @@ public class YAMLDSL {
     }
 
     public YAMLMap map() {
+        return mapElseException("An attempt was made to use " + String.valueOf(yaml) + " as a map.");
+    }
+
+    public YAMLMap mapElseException(String exceptionMessage) {
         if (yaml instanceof Map) {
             return new YAMLMap((Map) yaml);
         } else {
-            throw new IllegalArgumentException("An attempt was made to use " + String.valueOf(yaml) + " as a map.");
+            throw new IllegalArgumentException(exceptionMessage);
         }
     }
 
@@ -95,6 +99,16 @@ public class YAMLDSL {
         public Field ifBlankDefault(Object defaultValue) {
             this.defaultValue = defaultValue;
             return this;
+        }
+
+        public Iterable<Object> iterableElseException(String exceptionMessage) {
+            if (ifNullException != null && value == null) {
+                throw new IllegalArgumentException(ifNullException);
+            }
+            if (value instanceof Iterable) {
+                return (Iterable) value;
+            }
+            throw new IllegalArgumentException(exceptionMessage);
         }
     }
 }

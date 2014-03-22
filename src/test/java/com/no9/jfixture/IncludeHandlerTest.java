@@ -9,12 +9,12 @@ import static com.no9.jfixture.HandlerTest.parseContent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ImportHandlerTest {
-    private ImportHandler handler = new ImportHandler();
+public class IncludeHandlerTest {
+    private IncludeHandler handler = new IncludeHandler();
 
     @Test
     public void should_accept_selector() {
-        Map<String, Object> importContent = parseContent("import: resource:initial.yaml");
+        Map<String, Object> importContent = parseContent("include: resource:initial.yaml");
         assertTrue(handler.canProcess(importContent));
     }
 
@@ -30,7 +30,7 @@ public class ImportHandlerTest {
 
     @Test
     public void should_import_fixtures_from_a_constant_string() throws IOException, FixtureException {
-        Fixtures fixtures = Fixtures.load(FixturesInput.fromString("- import: 'string:- new-handler: com.no9.jfixture.EchoHandlerDummy'"));
+        Fixtures fixtures = Fixtures.load(FixturesInput.fromString("- include: 'string:- new-handler: com.no9.jfixture.EchoHandlerDummy'"));
 
         assertTrue(fixtures.findHandler(EchoHandlerDummy.class).isNotPresent());
 
@@ -41,7 +41,7 @@ public class ImportHandlerTest {
 
     @Test
     public void should_import_fixtures_from_a_resource_file() throws IOException, FixtureException {
-        Fixtures fixtures = Fixtures.load(FixturesInput.fromString("- import: resource:includeTest.yaml"));
+        Fixtures fixtures = Fixtures.load(FixturesInput.fromString("- include: resource:includeTest.yaml"));
 
         assertTrue(fixtures.findHandler(EchoHandlerDummy.class).isNotPresent());
 

@@ -17,7 +17,7 @@ public class Fixtures implements Closeable {
         this.handlers = handlers;
 
         addHandler(new NewHandlerHandler());
-        addHandler(new ImportHandler());
+        addHandler(new IncludeHandler());
     }
 
     public static Fixtures load(FixturesInput input, FixtureHandler... handlers) throws IOException {

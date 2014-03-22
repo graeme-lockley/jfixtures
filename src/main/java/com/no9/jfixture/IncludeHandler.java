@@ -5,10 +5,10 @@ import java.util.Map;
 
 import static com.no9.jfixture.YAMLDSL.fromYAML;
 
-public class ImportHandler implements ExtendedFixtureHandler {
+public class IncludeHandler implements ExtendedFixtureHandler {
     @Override
     public boolean canProcess(Map<String, Object> fixtureInput) {
-        return fixtureInput.containsKey("import");
+        return fixtureInput.containsKey("include");
     }
 
     @Override
@@ -18,7 +18,7 @@ public class ImportHandler implements ExtendedFixtureHandler {
 
     @Override
     public void process(Fixtures fixtures, Map<String, Object> fixtureInput) throws FixtureException {
-        String importLocation = fromYAML(fixtureInput).map().field("import").asString();
+        String importLocation = fromYAML(fixtureInput).map().field("include").asString();
 
         FixturesInput input = FixturesInput.none();
         try {

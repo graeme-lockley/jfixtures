@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.no9.jfixture.HandlerTest.hasHandler;
 import static com.no9.jfixture.HandlerTest.parseContent;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -33,21 +32,21 @@ public class ImportHandlerTest {
     public void should_import_fixtures_from_a_constant_string() throws IOException, FixtureException {
         Fixtures fixtures = Fixtures.load(FixturesInput.fromString("- import: 'string:- new-handler: com.no9.jfixture.EchoHandlerDummy'"));
 
-        assertFalse(hasHandler(fixtures, EchoHandlerDummy.class));
+        assertTrue(fixtures.findHandler(EchoHandlerDummy.class).isNotPresent());
 
         fixtures.processFixtures();
 
-        assertTrue(hasHandler(fixtures, EchoHandlerDummy.class));
+        assertTrue(fixtures.findHandler(EchoHandlerDummy.class).isPresent());
     }
 
     @Test
     public void should_import_fixtures_from_a_resource_file() throws IOException, FixtureException {
         Fixtures fixtures = Fixtures.load(FixturesInput.fromString("- import: resource:includeTest.yaml"));
 
-        assertFalse(hasHandler(fixtures, EchoHandlerDummy.class));
+        assertTrue(fixtures.findHandler(EchoHandlerDummy.class).isNotPresent());
 
         fixtures.processFixtures();
 
-        assertTrue(hasHandler(fixtures, EchoHandlerDummy.class));
+        assertTrue(fixtures.findHandler(EchoHandlerDummy.class).isPresent());
     }
 }

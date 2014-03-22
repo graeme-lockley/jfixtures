@@ -90,4 +90,40 @@ public class JDBCFixtureTest extends HandlerTest {
 
         handler.close();
     }
+
+    @Test
+    public void should_be_able_to_insert_rows_into_a_table_using_a_sql_command() throws FixtureException, SQLException, IOException {
+        JDBCHandler handler = JDBCHandler.create();
+
+        Map<String, Object> connectContent = parseContent("jdbc-connect:\n" +
+                "   driver: org.h2.Driver\n" +
+                "   url: 'jdbc:h2:mem:'\n" +
+                "   username: sa\n" +
+                "   password:");
+        handler.process(connectContent);
+
+        Map<String, Object> createTableContent = parseContent("jdbc-create-table:\n" +
+                "   name: people\n" +
+                "   rows: {id: 'bigint not null primary key auto_increment', name: 'varchar(50)'}");
+        handler.process(createTableContent);
+
+        Map<String, Object> sqlContent = parseContent("jdbc-sql:\n" +
+                "   - insert into people (name) values ('Graeme')\n" +
+                "   - insert into people (name) values ('Tim')");
+        assertTrue(handler.canProcess(sqlContent));
+        handler.process(sqlContent);
+
+        PreparedStatement preparedStatement = handler.connection().prepareStatement("select id, name from people order by name");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        assertEquals("Graeme", resultSet.getString(2));
+        resultSet.next();
+        assertEquals("Tim", resultSet.getString(2));
+        assertFalse(resultSet.next());
+
+        preparedStatement.close();
+        resultSet.close();
+
+        handler.close();
+    }
 }

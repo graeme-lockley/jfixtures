@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class JDBCHandler implements FixtureHandler {
+public class JDBCHandler implements BasicFixtureHandler {
     private Connection connection;
     private boolean autoCloseConnection = true;
 

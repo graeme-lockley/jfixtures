@@ -5,7 +5,8 @@ import java.util.Map;
 enum JDBCOperations {
     CONNECT(new JDBCConnect("jdbc-connect")),
     CREATE_TABLE(new JDBCCreateTable("jdbc-create-table")),
-    INSERT(new JDBCInsert("jdbc-insert"));
+    INSERT(new JDBCInsert("jdbc-insert")),
+    SQL(new JDBCSql("jdbc-sql"));
 
     private JDBCOperation operation;
 

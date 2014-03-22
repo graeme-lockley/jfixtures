@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class EchoHandlerDummy implements FixtureHandler {
+public class EchoHandlerDummy implements BasicFixtureHandler {
     private List<String> messages = new ArrayList<String>();
+    private boolean hasBeenClosed = false;
 
     public static EchoHandlerDummy create() {
         return new EchoHandlerDummy();
@@ -28,5 +29,10 @@ public class EchoHandlerDummy implements FixtureHandler {
 
     @Override
     public void close() throws IOException {
+        hasBeenClosed = true;
+    }
+
+    public boolean hasBeenClosed() {
+        return hasBeenClosed;
     }
 }

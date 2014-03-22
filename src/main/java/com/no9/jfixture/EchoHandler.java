@@ -3,7 +3,7 @@ package com.no9.jfixture;
 import java.io.IOException;
 import java.util.Map;
 
-public class EchoHandler implements FixtureHandler {
+public class EchoHandler implements BasicFixtureHandler {
     public static EchoHandler create() {
         return new EchoHandler();
     }

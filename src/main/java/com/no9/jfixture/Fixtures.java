@@ -6,24 +6,26 @@ import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class Fixtures implements Closeable {
     private InputStream inputStream;
     private Iterable<Object> fixtureDocuments;
-    private final Iterable<FixtureHandler> handlers;
+    private FixtureHandler[] handlers;
 
-    private Fixtures(InputStream inputStream, Iterable<FixtureHandler> handlers) throws IOException {
+    private Fixtures(InputStream inputStream, FixtureHandler... handlers) throws IOException {
         Yaml yaml = new Yaml();
 
         this.inputStream = inputStream;
         this.fixtureDocuments = yaml.loadAll(inputStream);
+
         this.handlers = handlers;
+        addHandler(new HandlerHandler());
     }
 
-    public static Fixtures loadFromResources(String resourceName, Iterable<FixtureHandler> handlers) throws IOException {
+    public static Fixtures loadFromResources(String resourceName, FixtureHandler... handlers) throws IOException {
         ClassLoader loader = Fixtures.class.getClassLoader();
         InputStream inputStream = loader.getResourceAsStream(resourceName);
         if (inputStream == null) {
@@ -33,17 +35,29 @@ public class Fixtures implements Closeable {
     }
 
     public static Fixtures loadFromResources(String resourceName) throws IOException {
-        return loadFromResources(resourceName, new ArrayList<FixtureHandler>());
+        return loadFromResources(resourceName, new FixtureHandler[0]);
     }
 
     public static Fixtures fromString(String fixtureContent) throws IOException {
         InputStream inputStream = new ByteArrayInputStream(fixtureContent.getBytes());
-        return new Fixtures(inputStream, new ArrayList<FixtureHandler>());
+        return new Fixtures(inputStream);
     }
 
     public void processFixtures() throws FixtureException {
         for (Object fixtureDocument : fixtureDocuments) {
             processDocument(fixtureDocument);
+        }
+
+        try {
+            closeHandlers();
+        } catch (IOException ex) {
+            throw new FixtureException(ex);
+        }
+    }
+
+    protected void closeHandlers() throws IOException {
+        for (FixtureHandler handler : handlers) {
+            handler.close();
         }
     }
 
@@ -64,7 +78,12 @@ public class Fixtures implements Closeable {
     private void processFixture(Map<String, Object> fixtureInput) throws FixtureException {
         if (fixtureInput.size() == 1) {
             FixtureHandler handler = getHandler(fixtureInput);
-            handler.process(fixtureInput);
+
+            if (handler instanceof BasicFixtureHandler) {
+                ((BasicFixtureHandler) handler).process(fixtureInput);
+            } else {
+                ((ExtendedFixtureHandler) handler).process(this, fixtureInput);
+            }
         } else {
             throw new FixtureException("Each fixture must have a single selector.");
         }
@@ -85,5 +104,14 @@ public class Fixtures implements Closeable {
             inputStream.close();
             inputStream = null;
         }
+    }
+
+    public FixtureHandler[] handlers() {
+        return handlers.clone();
+    }
+
+    public void addHandler(FixtureHandler fixtureHandler) {
+        this.handlers = Arrays.copyOf(handlers, handlers.length + 1);
+        this.handlers[handlers.length - 1] = fixtureHandler;
     }
 }

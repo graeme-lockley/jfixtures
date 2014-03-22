@@ -54,7 +54,7 @@ public class JDBCHandler implements BasicFixtureHandler {
         return connection.isPresent();
     }
 
-    protected Connection connection() {
+    public Connection connection() {
         return connection.get();
     }
 

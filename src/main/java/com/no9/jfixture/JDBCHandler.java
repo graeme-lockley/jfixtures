@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class JDBCHandler implements BasicFixtureHandler {
+public class JDBCHandler extends BasicFixtureHandler {
     private Optional<Connection> connection;
     private List<JDBCOperation> operations = Arrays.asList(
             new JDBCConnect("jdbc-connect"),

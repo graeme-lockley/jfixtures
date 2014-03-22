@@ -1,9 +1,8 @@
 package com.no9.jfixture;
 
-import java.io.IOException;
 import java.util.Map;
 
-public class NewHandlerHandler implements ExtendedFixtureHandler {
+public class NewHandlerHandler extends FixtureHandler {
     public static final String NEW_HANDLER_SELECTOR = "new-handler";
 
     @Override
@@ -22,10 +21,5 @@ public class NewHandlerHandler implements ExtendedFixtureHandler {
         } catch (ClassNotFoundException e) {
             throw new FixtureException(e);
         }
-    }
-
-    @Override
-    public void close() throws IOException {
-        // nothing to close as no resources are opened
     }
 }

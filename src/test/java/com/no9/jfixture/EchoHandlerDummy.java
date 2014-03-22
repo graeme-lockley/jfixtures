@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class EchoHandlerDummy implements BasicFixtureHandler {
+public class EchoHandlerDummy extends BasicFixtureHandler {
     private List<String> messages = new ArrayList<String>();
     private boolean hasBeenClosed = false;
 

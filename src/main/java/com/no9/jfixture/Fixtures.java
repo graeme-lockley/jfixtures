@@ -79,13 +79,7 @@ public class Fixtures implements Closeable {
 
     private void processFixture(Map<String, Object> fixtureInput) throws FixtureException {
         if (fixtureInput.size() == 1) {
-            FixtureHandler handler = getHandler(fixtureInput);
-
-            if (handler instanceof BasicFixtureHandler) {
-                ((BasicFixtureHandler) handler).process(fixtureInput);
-            } else {
-                ((ExtendedFixtureHandler) handler).process(this, fixtureInput);
-            }
+            getHandler(fixtureInput).process(this, fixtureInput);
         } else {
             throw new FixtureException("Each fixture must have a single selector.");
         }

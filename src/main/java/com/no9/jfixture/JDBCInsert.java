@@ -13,7 +13,7 @@ public class JDBCInsert extends JDBCOperation {
     protected void processOperation(JDBCHandler handler, Object fixtureInput) throws FixtureException {
         for (Object rowAsObject : fromYAML(fixtureInput)
                 .mapElseException(exceptionMessagePrefix() + ": Excepts a map")
-                .field("rows")
+                .field("fields")
                 .ifNullException(exceptionMessagePrefix() + ": The parameter rows is missing")
                 .iterableElseException(exceptionMessagePrefix() + ": The parameter rows is not a list")) {
 

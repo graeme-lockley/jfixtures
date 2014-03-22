@@ -73,7 +73,7 @@ public class JDBCFixtureTest extends HandlerTest {
 
         Map<String, Object> insertTableContent = parseContent("jdbc-insert:\n" +
                 "   name: people\n" +
-                "   rows: [{name: Graeme}, {name: Tim}]");
+                "   fields: [{name: Graeme}, {name: Tim}]");
         assertTrue(handler.canProcess(insertTableContent));
         handler.process(insertTableContent);
 

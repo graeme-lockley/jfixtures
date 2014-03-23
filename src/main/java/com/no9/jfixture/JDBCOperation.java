@@ -25,24 +25,6 @@ public abstract class JDBCOperation {
         return selector;
     }
 
-    protected String parameter(Map<String, Object> connectParams, String name) throws FixtureException {
-        String result = parameter(connectParams, name, null);
-        if (result == null) {
-            throw new FixtureException("JDBCHandler: The expected parameter " + name + " is missing.");
-        } else {
-            return result;
-        }
-    }
-
-    protected String parameter(Map<String, Object> connectParams, String name, String defaultValue) {
-        Object result = connectParams.get(name);
-        if (result == null) {
-            return defaultValue;
-        } else {
-            return String.valueOf(result);
-        }
-    }
-
     protected String exceptionMessagePrefix() {
         return "JDBCHandler: " + selector() + ": ";
     }

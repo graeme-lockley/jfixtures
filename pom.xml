@@ -4,13 +4,40 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>jfixtures</groupId>
+    <groupId>za.co.no9</groupId>
     <artifactId>jfixtures</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+    <name>jfixtures</name>
+    <description>An extensible Java fixtures library</description>
+    <url>https://github.com/graeme-lockley/jfixtures</url>
+    <licenses>
+        <license>
+            <name>GNU General Public License, version 2</name>
+            <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/graeme-lockley/jfixtures</url>
+        <connection>scm:git:git://github.com/graeme-lockley/jfixtures.git</connection>
+        <developerConnection>scm:git:git@github.com:graeme-lockley/jfixtures.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <email>graemel@no9.co.za</email>
+            <name>Graeme Lockley</name>
+            <url>https://github.com/graeme-lockley</url>
+            <id>graeme-lockley</id>
+        </developer>
+    </developers>
+
     <properties>
         <java.version>1.6</java.version>
     </properties>
+
     <build>
         <pluginManagement>
             <plugins>

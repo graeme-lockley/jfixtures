@@ -1,5 +1,4 @@
-jfixtures
-=========
+# jfixtures
 
 Having spent some time in the rails and play world I missed a simple yet effective fixtures tool to load data into 
 Java systems that I work on.
@@ -24,8 +23,7 @@ In order to make this easy I have pulled together a couple of tools to assist.
 This project is what I use.
 
 
-Example
--------
+## Example
 
 Let's use an example to illustrate how jfixtures can be used.  We wish to create a test which is dependent on a table
 being in place.  The table in question is called PEOPLE with an autoincrement ID and a second field NAME to store the person's
@@ -86,14 +84,13 @@ junit 4 test that makes use of this file:
         }
     }
 
-Handler Reference
------------------
+## Handler Reference
 
-echo
+### echo
 
 Displays the content of the parameter to the console.  Used for tracking progress in a fixture's execution.
 
-Example:
+#### Example:
 
     - echo: Some or other message
 
@@ -103,22 +100,22 @@ Example:
 
 The purpose of this command is for reference only as it adds a time overhead to the processes of fixtures.
 
-include
+### include
 
 Import a sequence of commands from another file into the fixture. Typically this is used to hold common schema and lookup
 table definitions before inserting data specific to a test scenario.
 
-Example:
+#### Example:
 
     - include: resource:test/connection.yaml
 
 Includes all of the commands within the file test/connection.yaml off of the test resources directory into the current fixture.
 
-jdbc-connect
+### jdbc-connect
 
 Connects to a database using JDBC.
 
-Parameters:
+#### Parameters:
 
 - driver: the class name of the JDBC driver that is to be used.  The JDBC driver will need to be included in the class path
     prior to this command.
@@ -130,7 +127,7 @@ Parameters:
 - autoclose: an optional parameter that, if set, will automatically close the database connection at the end of the completed
     fixture.  This parameter defaults to true.
 
-Example:
+#### Example:
 
     - jdbc-connect:
         driver: org.h2.Driver
@@ -142,11 +139,11 @@ Note that given that fixtures are described using YAML the above example can be 
     - jdbc-connect: {driver: org.h2.Driver, url: 'jdbc:h2:mem:', username: sa}
 
 
-jdbc-create-table
+### jdbc-create-table
 
 
-jdbc-insert
+### jdbc-insert
 
-jdbc-sql
+### jdbc-sql
 
-use-handler
+### use-handler

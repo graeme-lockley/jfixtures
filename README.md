@@ -53,11 +53,11 @@ This following fixture file supports this requirement:
 As you can see the jfixture input is a YAML sequence where each sequence element is a command with a set of associated
 arguments.  The commands used in this fixture are:
 
-- use-handler: adds a handler to the set of available handlers that this fixture has access to.
-- jdbc-connect: opens a JDBC database connection to the named database.  In this example the driver is the H2 driver and the
+- `use-handler`: adds a handler to the set of available handlers that this fixture has access to.
+- `jdbc-connect`: opens a JDBC database connection to the named database.  In this example the driver is the H2 driver and the
     URL refers to an in-memory database.
-- jdbc-create-table: creates a table with the passed name and the passed fields.
-- jdbc-insert: inserts rows into the named table using the values contained within the rows sequence.  The ID is not passed
+- `jdbc-create-table`: creates a table with the passed name and the passed fields.
+- `jdbc-insert`: inserts rows into the named table using the values contained within the rows sequence.  The ID is not passed
     as it is automatically assigned a value.
 
 A couple of things to note:
@@ -98,12 +98,26 @@ Displays the content of the parameter to the console.  Used for tracking progres
         - Message line 1
         - Message line 2
 
-The purpose of this command is for reference only as it adds a time overhead to the processes of fixtures.
+The purpose of this command is for reference only as it adds a time overhead to the processing of fixtures.
+
 
 ### include
 
 Import a sequence of commands from another file into the fixture. Typically this is used to hold common schema and lookup
 table definitions before inserting data specific to a test scenario.
+
+#### Parameters:
+
+This command accepts a single command containing the location of the file whose content is to be include.  There are two
+forms of location:
+
+- `resource:*file-name*`: this style refers to a file contained within the resources directory - usually a directory off of
+    src/test.
+- `string:*some-or-other-string-content*`: this style is used for testing the include command and serves no real purpose beyond
+    that.
+
+Depending on need jfixtures might support other include file name formats.
+
 
 #### Example:
 
@@ -111,20 +125,21 @@ table definitions before inserting data specific to a test scenario.
 
 Includes all of the commands within the file test/connection.yaml off of the test resources directory into the current fixture.
 
+
 ### jdbc-connect
 
 Connects to a database using JDBC.
 
 #### Parameters:
 
-- driver: the class name of the JDBC driver that is to be used.  The JDBC driver will need to be included in the class path
+- **driver**: the class name of the JDBC driver that is to be used.  The JDBC driver will need to be included in the class path
     prior to this command.
-- url: the URL used to connect to the desired database using the above driver.
-- username: an optional parameter that is used as the user name to the database connection.  If this parameter is not supplied
+- **url**: the URL used to connect to the desired database using the above driver.
+- **username**: an optional parameter that is used as the user name to the database connection.  If this parameter is not supplied
     then an empty string is passed.
-- password: an optional parameter that is used as the password to the database connection.  If this parameter is not supplied
+- **password**: an optional parameter that is used as the password to the database connection.  If this parameter is not supplied
     then an empty string is passed.
-- autoclose: an optional parameter that, if set, will automatically close the database connection at the end of the completed
+- **autoclose**: an optional parameter that, if set, will automatically close the database connection at the end of the completed
     fixture.  This parameter defaults to true.
 
 #### Example:
@@ -144,6 +159,8 @@ Note that given that fixtures are described using YAML the above example can be 
 
 ### jdbc-insert
 
+
 ### jdbc-sql
+
 
 ### use-handler

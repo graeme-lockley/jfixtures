@@ -64,7 +64,7 @@ A couple of things to note:
 
 - I have used this technique using H2 even when the application that I am testing is deployed on an Oracle database.
 - The parameter autoclose has been set to false in the jdbc-connect.  This is to ensure that when the fixture has run
-    to completion the database is not automatically closed and, is it is an in-memory database, the contents would therefore
+    to completion the database is not automatically closed and, as it is an in-memory database, the contents would therefore
     be lost.  In the 'unit' test code below you will note that after the fixture has been run in the database connection
     is then retrieved from the JDBC handler and used to interrogate the database.
 - I very seldom add primary key and foreign key constraints unless I specifically need these constraints to test the application - I try

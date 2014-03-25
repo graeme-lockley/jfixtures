@@ -32,7 +32,7 @@ to be used is an H2 in-memory database - this will make the setup on each test a
 
 This following fixture file supports this requirement:
 
-    - use-handler: com.no9.jfixture.JDBCHandler
+    - use-handler: za.co.no9.jfixture.JDBCHandler
 
     - jdbc-connect:
         driver: org.h2.Driver
@@ -111,9 +111,9 @@ table definitions before inserting data specific to a test scenario.
 This command accepts a single command containing the location of the file whose content is to be include.  There are two
 forms of location:
 
-- `resource:*file-name*`: this style refers to a file contained within the resources directory - usually a directory off of
+- `resource:file-name`: this style refers to a file contained within the resources directory - usually a directory off of
     src/test.
-- `string:*some-or-other-string-content*`: this style is used for testing the include command and serves no real purpose beyond
+- `string:some-or-other-string-content`: this style is used for testing the include command and serves no real purpose beyond
     that.
 
 Depending on need jfixtures might support other include file name formats.
@@ -156,8 +156,53 @@ Note that given that fixtures are described using YAML the above example can be 
 
 ### jdbc-create-table
 
+Creates a table against the connection establish using `jdbc-connect` or the connection passed into `za.co.no9.jfixture.JDBCHandler`'s constructor.
+
+#### Parameters:
+
+- **name**: The name of the table that is to be created.
+- **fields**: A sequence of name onto data type mappings that are to be used as the table's column definitions.  Note
+    that the data type is passed verbatim into the SQL create table statement so you can use this to exploit specific
+    features of the target database.
+
+#### Example:
+
+    - jdbc-create-table:
+         name: people
+         fields:
+             - id: 'bigint not null primary key auto_increment'
+             - name: 'varchar(50)'
+
 
 ### jdbc-insert
+
+Insert rows into a named table.
+
+#### Parameters:
+
+- **name**: The name of the table into which the rows are to be inserted.
+- **rows**: A sequence consisting of name-value mappings which are to be inserted as individual rows into the named table.
+
+A couple of notes:
+
+- Each element in the sequence is treated as a separate insert statement so that each element can insert different
+    fields.
+- The table which is being populated does not need to be created through a `jdb-create-table` command but can be an existing
+    table within the connected database.
+
+#### Example:
+
+    - jdbc-insert:
+        name: people
+        rows:
+            - {name: Graeme}
+            - {name: Tim}
+
+Given that the `rows` defines a sequence this example can be expressed on a single line as shown below:
+
+    - jdbc-insert:
+        name: people
+        rows: [{name: Graeme}, {name: Tim}]
 
 
 ### jdbc-sql

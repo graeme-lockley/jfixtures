@@ -207,5 +207,39 @@ Given that the `rows` defines a sequence this example can be expressed on a sing
 
 ### jdbc-sql
 
+Allows arbitrary SQL commands to be submitted to the connected database.
 
-### use-handler
+#### Parameters:
+
+Accepts a sequence of SQL statements.
+
+#### Example:
+
+    - jdbc-sql:
+        - insert into people (name) values ('Graeme')
+        - insert into people (name) values ('Tim')
+
+Note that each element in the sequence must consist of a single SQL statement.
+
+
+### new-handler
+
+Makes the handler implemented in the command's associated parameter available to the fixture.
+
+The following table lists the different handlers and what commands each handler supports.
+
+Handler                              | Comment                                  | Commands
+-------------------------------------|------------------------------------------|----------
+za.co.no9.jfixture.EchoHandler       |                                          | echo
+za.co.no9.jfixture.IncludeHandler    | Automatically included into each fixture | include
+za.co.no9.jfixture.JDBCHandler       |                                          | jdbc-connect
+za.co.no9.jfixture.JDBCHandler       |                                          | jdbc-create-table
+za.co.no9.jfixture.JDBCHandler       |                                          | jdbc-insert
+za.co.no9.jfixture.JDBCHandler       |                                          | jdbc-sql
+za.co.no9.jfixture.NewHandlerHandler | Automatically included into each fixture | new-handler
+
+#### Example:
+
+    - use-handler: za.co.no9.jfixture.JDBCHandler
+
+

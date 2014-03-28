@@ -21,9 +21,8 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
     <scm>
-        <url>https://github.com/graeme-lockley/jfixtures</url>
+        <url>https://github.com/graeme-lockley/jfixtures.git</url>
         <connection>scm:git:git://github.com/graeme-lockley/jfixtures.git</connection>
         <developerConnection>scm:git:git@github.com:graeme-lockley/jfixtures.git</developerConnection>
     </scm>

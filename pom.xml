@@ -10,7 +10,7 @@
     <groupId>za.co.no9</groupId>
     <artifactId>jfixtures</artifactId>
     <packaging>jar</packaging>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <name>jfixtures</name>
     <description>An extensible Java fixtures library</description>
     <url>https://github.com/graeme-lockley/jfixtures</url>
@@ -23,8 +23,8 @@
     </licenses>
     <scm>
         <url>https://github.com/graeme-lockley/jfixtures.git</url>
-        <connection>scm:git:ssh://git@github.com/graeme-lockley/jfixtures.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/graeme-lockley/jfixtures.git</developerConnection>
+        <connection>scm:git:https://github.com/graeme-lockley/jfixtures.git</connection>
+        <developerConnection>scm:git:https://github.com/graeme-lockley/jfixtures.git</developerConnection>
     </scm>
 
     <developers>

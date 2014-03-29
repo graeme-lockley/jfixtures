@@ -32,7 +32,7 @@ to be used is an H2 in-memory database - this will make the setup on each test a
 
 This following fixture file supports this requirement:
 
-    - use-handler: za.co.no9.jfixture.JDBCHandler
+    - new-handler: za.co.no9.jfixture.JDBCHandler
 
     - jdbc-connect:
         driver: org.h2.Driver
@@ -53,7 +53,7 @@ This following fixture file supports this requirement:
 As you can see the jfixture input is a YAML sequence where each sequence element is a command with a set of associated
 arguments.  The commands used in this fixture are:
 
-- `use-handler`: adds a handler to the set of available handlers that this fixture has access to.
+- `new-handler`: adds a handler to the set of available handlers that this fixture has access to.
 - `jdbc-connect`: opens a JDBC database connection to the named database.  In this example the driver is the H2 driver and the
     URL refers to an in-memory database.
 - `jdbc-create-table`: creates a table with the passed name and the passed fields.
@@ -240,6 +240,6 @@ za.co.no9.jfixture.NewHandlerHandler | Automatically included into each fixture 
 
 #### Example:
 
-    - use-handler: za.co.no9.jfixture.JDBCHandler
+    - new-handler: za.co.no9.jfixture.JDBCHandler
 
 

@@ -61,7 +61,7 @@ public class JDBCFixtureTest extends HandlerTest {
 
         Map<String, Object> createTableContent = parseContent("jdbc-create-table:\n" +
                 "   name: people\n" +
-                "   rows: {id: 'bigint not null primary key auto_increment', name: 'varchar(50)'}");
+                "   fields: {id: 'bigint not null primary key auto_increment', name: 'varchar(50)'}");
         assertTrue(handler.canProcess(createTableContent));
         handler.process(createTableContent);
 
@@ -88,12 +88,12 @@ public class JDBCFixtureTest extends HandlerTest {
 
         Map<String, Object> createTableContent = parseContent("jdbc-create-table:\n" +
                 "   name: people\n" +
-                "   rows: {id: 'bigint not null primary key auto_increment', name: 'varchar(50)'}");
+                "   fields: {id: 'bigint not null primary key auto_increment', name: 'varchar(50)'}");
         handler.process(createTableContent);
 
         Map<String, Object> insertTableContent = parseContent("jdbc-insert:\n" +
                 "   name: people\n" +
-                "   fields: [{name: Graeme}, {name: Tim}]");
+                "   rows: [{name: Graeme}, {name: Tim}]");
         assertTrue(handler.canProcess(insertTableContent));
         handler.process(insertTableContent);
 
@@ -124,7 +124,7 @@ public class JDBCFixtureTest extends HandlerTest {
 
         Map<String, Object> createTableContent = parseContent("jdbc-create-table:\n" +
                 "   name: people\n" +
-                "   rows: {id: 'bigint not null primary key auto_increment', name: 'varchar(50)'}");
+                "   fields: {id: 'bigint not null primary key auto_increment', name: 'varchar(50)'}");
         handler.process(createTableContent);
 
         Map<String, Object> sqlContent = parseContent("jdbc-sql:\n" +

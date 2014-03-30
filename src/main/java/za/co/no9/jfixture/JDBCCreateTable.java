@@ -16,7 +16,7 @@ public class JDBCCreateTable extends JDBCOperation {
                 .append(fixtureMap.field("name").ifBlankException(exceptionMessagePrefix() + ": Field name has not been set.").asString())
                 .append(" (");
 
-        YAMLMap rows = fixtureMap.field("rows").ifNullException(exceptionMessagePrefix() + ": Field rows has not been set.").map();
+        YAMLMap rows = fixtureMap.field("fields").ifNullException(exceptionMessagePrefix() + ": Field fields has not been set.").map();
 
         for (String key : rows.keySet()) {
             buffer.append(key)

@@ -10,7 +10,7 @@
     <groupId>za.co.no9</groupId>
     <artifactId>jfixtures</artifactId>
     <packaging>jar</packaging>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
     <name>jfixtures</name>
     <description>An extensible Java fixtures library</description>
     <url>https://github.com/graeme-lockley/jfixtures</url>

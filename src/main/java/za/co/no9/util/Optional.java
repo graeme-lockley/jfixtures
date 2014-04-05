@@ -37,9 +37,9 @@ public class Optional<T> {
         return element == null ? elseElement : element;
     }
 
-    public <E extends Throwable> void ifPresent(Consumer<T> consumer) throws E {
+    public void ifPresent(Consumer<T> consumer) {
         if (element != null) {
-            consumer.<E>accept(element);
+            consumer.accept(element);
         }
     }
 }

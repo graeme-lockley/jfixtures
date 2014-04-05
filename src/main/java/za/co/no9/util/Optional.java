@@ -1,4 +1,4 @@
-package za.co.no9.utils;
+package za.co.no9.util;
 
 public class Optional<T> {
     private T element;

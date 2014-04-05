@@ -1,6 +1,6 @@
 package za.co.no9.jfixture;
 
-import za.co.no9.utils.Optional;
+import za.co.no9.util.Optional;
 
 import java.io.Closeable;
 import java.io.IOException;

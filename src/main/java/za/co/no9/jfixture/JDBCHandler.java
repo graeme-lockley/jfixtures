@@ -37,7 +37,7 @@ public class JDBCHandler extends BasicFixtureHandler {
                 return Optional.of(operation);
             }
         }
-        return Optional.none();
+        return Optional.empty();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class JDBCHandler extends BasicFixtureHandler {
                     throw new IOException(e);
                 }
             }
-            connection = Optional.none();
+            connection = Optional.empty();
         }
     }
 }

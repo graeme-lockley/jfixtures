@@ -14,7 +14,7 @@ public class Optional<T> {
         return new Optional<T>(element);
     }
 
-    public static <T> Optional<T> none() {
+    public static <T> Optional<T> empty() {
         return new Optional<T>(null);
     }
 

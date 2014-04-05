@@ -115,7 +115,7 @@ public class Fixtures implements Closeable {
             }
         }
 
-        return Optional.none();
+        return Optional.empty();
     }
 
     public <T extends FixtureHandler> T handler(Class<T> classInstance) {

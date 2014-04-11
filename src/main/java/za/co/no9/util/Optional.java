@@ -1,5 +1,7 @@
 package za.co.no9.util;
 
+import za.co.no9.util.function.Consumer;
+
 public class Optional<T> {
     private T element;
 

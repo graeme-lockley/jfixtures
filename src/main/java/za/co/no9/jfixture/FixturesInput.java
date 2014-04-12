@@ -32,6 +32,10 @@ public final class FixturesInput implements Closeable {
         return new FixturesInput(inputStream);
     }
 
+    public static FixturesInput fromInputStream(InputStream inputStream) throws IOException {
+        return new FixturesInput(inputStream);
+    }
+
     public static FixturesInput fromLocation(String locationName) throws IOException {
         if (locationName.startsWith("string:")) {
             return fromString(locationName.substring(7));

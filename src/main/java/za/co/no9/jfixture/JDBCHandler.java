@@ -28,7 +28,7 @@ public class JDBCHandler extends BasicFixtureHandler {
 
     @Override
     public boolean canProcess(Map<String, Object> fixtureInput) {
-        return findOperation(fixtureInput) != null;
+        return findOperation(fixtureInput).isPresent();
     }
 
     private Optional<JDBCOperation> findOperation(Map<String, Object> fixtureInput) {

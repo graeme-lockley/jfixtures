@@ -1,0 +1,24 @@
+#!/bin/bash
+
+case "$1" in
+	"")
+		if [ "$PUSH_BRANCH" = "true" ]
+		then
+			git config --global push.default matching
+
+			git add pom.xml
+			git add pom.xml.versionsBackup
+
+			git commit -m "Updated POM with release candidate's version number"
+			git push -u origin `git status | grep "On branch" | cut -d " " -f 3`
+		else
+			echo "Failed: the variable PUSH_BRANCH is not present and set to true."
+			exit 1
+		fi
+		;;
+	"info")
+		echo "Push Release Candidate Branch: Adds the updated pom and backup pom into git and pushed these changes through to the remote git repo."
+		echo "PARAM: PUSH_BRANCH: boolean: Will execute only if this parameter is present and set to 'true'"
+		;;
+esac
+

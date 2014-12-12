@@ -1,0 +1,16 @@
+#!/bin/bash
+
+case "$1" in
+	"")
+		POM_VERSION=`grep "<version>.*SNAPSHOT</version>" pom.xml | sed -e 's/^ *\<version\>//' -e 's/SNAPSHOT.*$//'`
+		BRANCH_NAME=`git status | grep "On branch" | cut -d \  -f 3 | sed -e 's/^rc-//'`
+		NEW_POM_VERSION="$POM_VERSION$BRANCH_NAME"
+
+		echo "versionPOM: info: POM version set to $NEW_POM_VERSION"
+		mvn versions:set -DnewVersion=$NEW_POM_VERSION
+		;;
+	"info")
+		echo "Version POM: Set the version of number of the POM by replacing SNAPSHOT with the YYYYMMSS-hhmmss from the branch name."
+		;;
+esac
+

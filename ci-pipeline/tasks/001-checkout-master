@@ -1,0 +1,11 @@
+#!/bin/bash
+
+case "$1" in
+	"")
+		git checkout master
+		;;
+	"info")
+		echo "Checkout Master: Prepare for working on master, switch to it by updating the index and the files in the working tree, and by pointing HEAD at master."
+		;;
+esac
+

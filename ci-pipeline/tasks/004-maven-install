@@ -1,0 +1,11 @@
+#!/bin/bash
+
+case "$1" in
+	"")
+		mvn install
+		;;
+	"info")
+		echo "Compile/ Unit Test/ Install: Compile the code base, run all of the unit tests, package the jar and install the packaged jar into the local maven repository."
+		;;
+esac
+

@@ -8,3 +8,6 @@
 *.ear
 
 target
+
+.ci-status
+ci-pipeline/logs/*
